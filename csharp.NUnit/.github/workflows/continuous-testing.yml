@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: [ main, feat/*, develop ]
+    branches: [ main, feat/*, develop, test/* ]  # Added test/* branches
   pull_request:
     branches: [ main, develop ]
 
@@ -27,28 +27,10 @@ jobs:
         
     - name: Build Solution 🔨
       run: |
-        cd csharpcore
+        cd csharp.NUnit
         dotnet build --configuration Release --no-restore
         
     - name: Execute Test Suite 🧪
       run: |
-        cd csharpcore
-        dotnet test --no-restore --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
-        
-    - name: Publish Test Results 📊
-      uses: actions/upload-artifact@v3
-      if: success() || failure()
-      with:
-        name: test-results
-        path: |
-          csharpcore/TestResults/*.trx
-          csharpcore/TestResults/**/coverage.cobertura.xml
-        
-    - name: Generate Test Report 📈
-      uses: dorny/test-reporter@v1
-      if: success() || failure()
-      with:
-        name: NUnit Test Results
-        path: csharpcore/TestResults/*.trx
-        reporter: dotnet-trx
-        fail-on-error: true
+        cd csharp.NUnit
+        dotnet test --no-restore --verbosity normal
