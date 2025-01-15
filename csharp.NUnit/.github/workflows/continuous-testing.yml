@@ -1,0 +1,54 @@
+﻿name: Continuous Testing Pipeline 🧪
+
+on:
+  push:
+    branches: [ main, feat/*, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Execute Test Suite
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      name: Checkout Repository 📥
+      
+    - name: Setup .NET Environment 🛠️
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore Dependencies 📦
+      run: |
+        cd csharpcore
+        dotnet restore
+        
+    - name: Build Solution 🔨
+      run: |
+        cd csharpcore
+        dotnet build --configuration Release --no-restore
+        
+    - name: Execute Test Suite 🧪
+      run: |
+        cd csharpcore
+        dotnet test --no-restore --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+        
+    - name: Publish Test Results 📊
+      uses: actions/upload-artifact@v3
+      if: success() || failure()
+      with:
+        name: test-results
+        path: |
+          csharpcore/TestResults/*.trx
+          csharpcore/TestResults/**/coverage.cobertura.xml
+        
+    - name: Generate Test Report 📈
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: NUnit Test Results
+        path: csharpcore/TestResults/*.trx
+        reporter: dotnet-trx
+        fail-on-error: true
