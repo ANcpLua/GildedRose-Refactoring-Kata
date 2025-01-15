@@ -1,24 +1,79 @@
-# Gilded Rose starting position in C# NUnit
+# Gilded Rose Testing Strategy 🧪
 
-## Build the project
+## Strategic Overview
 
-Use your normal build tools to build the projects in Debug mode.
-For example, you can use the `dotnet` command line tool:
+This repository implements a comprehensive testing strategy for the Gilded Rose kata, focusing on code quality, maintainability, and complete coverage of business rules.
 
-``` cmd
-dotnet build GildedRose.sln -c Debug
+## Project Structure 📁
+
+```plaintext
+📦 GildedRoseTests
+ ┣ 📜 QualityConstants.cs    # Quality boundaries and thresholds
+ ┣ 📜 ItemNames.cs           # Centralized item definitions
+ ┣ 📜 TestHelper.cs          # Testing utilities and factories
+ ┣ 📜 GildedRoseTests.cs     # Core test implementations
+ ┗ 📜 ApprovalTests.cs       # Regression test coverage
 ```
 
-## Run the Gilded Rose Command-Line program
+## Testing Strategy 🎯
 
-For e.g. 10 days:
+### Core Testing Principles
+- Test-Driven Development (TDD)
+- Comprehensive scenario coverage
+- Clean code and SOLID principles
+- Maintainable test architecture
 
-``` cmd
-GildedRose/bin/Debug/net8.0/GildedRose 10
+### Implementation Approach
+
+#### 1. Quality Constants
+```csharp
+public static class QualityConstants
+{
+    public const int MinQuality = 0;
+    public const int MaxQuality = 50;
+    public const int SulfurasQuality = 80;
+}
 ```
 
-## Run all the unit tests
+#### 2. Test Categories
 
-``` cmd
-dotnet test
+##### Regular Items
+- Quality degradation rates
+- Sell-by date transitions
+- Boundary conditions
+
+##### Special Items
+- Aged Brie quality progression
+- Sulfuras immutability
+- Backstage passes value rules
+
+### Test Implementation Features
+
+#### 1. Parameterized Testing
+```csharp
+[TestCase(10, 20, 19, Description = "Regular item before sell date")]
+[TestCase(0, 20, 18, Description = "Regular item on sell date")]
 ```
+
+#### 2. Factory Patterns
+```csharp
+public static class ItemFactory
+{
+    public static Item RegularItem(int sellIn = 10, int quality = 20)
+    public static Item AgedBrie(int sellIn = 10, int quality = 20)
+    public static Item Sulfuras(int sellIn = 0)
+}
+```
+
+## Testing Coverage Matrix
+
+| Category | Scenarios | Coverage |
+|----------|-----------|----------|
+| Regular Items | Quality Decrease, Boundaries | ✅ |
+| Aged Brie | Quality Increase, Max Limit | ✅ |
+| Sulfuras | Immutability, Consistency | ✅ |
+| Backstage Passes | Time-based Rules | ✅ |
+
+
+---
+
